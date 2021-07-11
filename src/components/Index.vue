@@ -40,17 +40,21 @@
           <el-upload
             ref="upload"
             class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="none"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             :auto-upload="false"
             :file-list="fileList"
             :on-change="handleChange"
+            :on-success="fileSuccessUpLoad"
+            :on-error="fileErrorUpload"
+            :http-request="uploadFile"
           >
             <el-button size="small" type="primary">选取文件</el-button>
           </el-upload>
         </el-form-item>
         <el-button type="primary" id="btn" @click="submit()">提交</el-button>
+        <!-- <el-button type="primary" @click="test()">测试</el-button> -->
       </el-form>
     </el-card>
 
@@ -118,7 +122,9 @@ export default {
       typeValue: '',
       fileName: null,
       fileList: null,
-      encrypt: '1'
+      file: null,
+      encrypt: '1',
+      obj: {}
     }
   },
   methods: {
@@ -127,9 +133,11 @@ export default {
       // const { data: res } = await this.$http.get('indoor/building/add')
 
     },
-    async submit () {
+    submit () {
+      console.log('tip', 'this is submit function')
       // 表格添加行
       var obj = { buildName: '', floor: '', type: this.typeValue, encryption: '', fileName: this.fileName }
+      this.obj = obj
       var i
       for (i = 0; i < this.buildNames.length; i++) {
         if (this.buildName === this.buildNames[i].value) {
@@ -154,26 +162,7 @@ export default {
       this.tableData.push(obj)
 
       // 上传文件
-      var data = {}
-      var url = ''
-      if (this.typeValue === '1') {
-        // this.$refs.upload.submit()
-        url = 'localhost:80/wifi/' + obj.buildName + '/1'
-        console.log('url', url)
-        data = await this.$http.post(url)
-      } else if (this.typeValue === '2') {
-        data = await this.$http.post('127.0.0.1:80/ble/' + obj.buildName)
-      } else if (this.typeValue === '3') {
-        data = await this.$http.post('127.0.0.1:80/mag/' + obj.buildName + obj.floor)
-      } else if (this.typeValue === '4') {
-        data = await this.$http.post('127.0.0.1:80/pic/' + obj.buildName)
-      }
-      console.log('data', data)
-      // if (data.meta.status === 200) {
-      //   this.$message.success('上传成功')
-      // } else {
-      //   this.$message.err('上传失败')
-      // }
+      this.$refs.upload.submit()
     },
     handleRemove (file, fileList) {
       console.log(file, fileList)
@@ -184,7 +173,62 @@ export default {
     handleChange (file, fileList) {
       this.fileName = file.name
       this.fileList = fileList
+      this.file = file
+      console.log('change_file:', file)
+    },
+    fileSuccessUpLoad (response, file, fileList) {
+      console.log('response:', response)
+      console.log('file', file)
+      console.log('fileList', fileList)
+    },
+    fileErrorUpload (err, file, fileList) {
+      console.log('err', err)
+      console.log('file', file)
+      console.log('fileList', fileList)
+    },
+    uploadFile () {
+    //   var data = {}
+    //   var url = ''
+    //   if (this.typeValue === '1') {
+    //     url = 'http://47.99.48.150:16828/wifi/' + this.obj.buildName + '/1'
+    //     console.log('url', url)
+    //     data = await this.$http.post(url)
+    //   } else if (this.typeValue === '2') {
+    //     data = await this.$http.post('127.0.0.1:80/ble/' + this.obj.buildName)
+    //   } else if (this.typeValue === '3') {
+    //     data = await this.$http.post('127.0.0.1:80/mag/' + this.obj.buildName + this.obj.floor)
+    //   } else if (this.typeValue === '4') {
+    //     data = await this.$http.post('127.0.0.1:80/pic/' + this.obj.buildName)
+    //   }
+    //   console.log('data', data)
+    //   if (data.meta.status === 200) {
+    //     this.$message.success('上传成功')
+    //   } else {
+    //     this.$message.err('上传失败')
+    //   }
+    // }
+      console.log('tip', 'this is upload function')
+      const formData = new FormData()
+      formData.append('file', this.file.raw)
+      this.$axios({
+        url: '/feature/pic/shilingtong',
+        method: 'post',
+        data: formData
+      }).then((response) => {
+        console.log('res:', response)
+      }).catch((error) => {
+        console.log('err:', error)
+      })
     }
+    // test () {
+    //   this.$axios.get('/').then(response => {
+    //     if (response.data) {
+    //       console.log(response.data)
+    //     }
+    //   }).catch(err => {
+    //     console.log(err)
+    //   })
+    // }
   },
   created () {
     // this.getData()
@@ -198,7 +242,7 @@ export default {
   margin: auto;
 }
 #myCard {
-  padding: 25px 320px;
+  padding: 25px 25%;
 }
 #btn {
   margin-bottom: 10px;
