@@ -3,7 +3,11 @@
     <el-card id="myCard">
       <el-form label-width="150px">
         <el-form-item label="Building Name">
-          <el-select v-model="buildName" placeholder="请选择类型">
+          <el-select
+            v-model="buildName"
+            placeholder="请选择类型"
+            @change="selectChange"
+          >
             <el-option
               v-for="item in buildNames"
               :key="item.value"
@@ -89,10 +93,8 @@ export default {
   data () {
     return {
       tableData: [],
-      buildNames: [{
-        value: '1',
-        label: 'shilintong'
-      }],
+      list: [],
+      buildNames: [],
       buildName: '',
       floors: [
         {
@@ -129,13 +131,38 @@ export default {
   },
   methods: {
     // get building list data
-    async getData () {
-      // const { data: res } = await this.$http.get('indoor/building/add')
-
+    getBid () {
+      this.$axios.get('/infos').then(response => {
+        console.log('response', response)
+        this.list = response.data
+        var obj
+        for (var i = 0; i < this.list.length; i++) {
+          obj = {
+            value: '' + i,
+            label: this.list[i].bid
+          }
+          this.buildNames.push(obj)
+        }
+      }).catch(err => {
+        console.log('err:', err)
+      })
+    },
+    // get Fid
+    selectChange (param) {
+      var obj
+      this.list.forEach((val) => {
+        if (val.bid === this.buildNames[this.buildName].label) {
+          this.floors = []
+          for (var i = 0; i < val.fids.length; i++) {
+            obj = { value: '' + i, label: val.fids[i] }
+            this.floors.push(obj)
+          }
+        }
+        console.log('param', param)
+      })
     },
     submit () {
-      console.log('tip', 'this is submit function')
-      // 表格添加行
+      // table add row
       var obj = { buildName: '', floor: '', type: this.typeValue, encryption: '', fileName: this.fileName }
       this.obj = obj
       var i
@@ -159,7 +186,6 @@ export default {
       } else {
         obj.encryption = '否'
       }
-      this.tableData.push(obj)
 
       // 上传文件
       this.$refs.upload.submit()
@@ -187,51 +213,70 @@ export default {
       console.log('fileList', fileList)
     },
     uploadFile () {
-    //   var data = {}
-    //   var url = ''
-    //   if (this.typeValue === '1') {
-    //     url = 'http://47.99.48.150:16828/wifi/' + this.obj.buildName + '/1'
-    //     console.log('url', url)
-    //     data = await this.$http.post(url)
-    //   } else if (this.typeValue === '2') {
-    //     data = await this.$http.post('127.0.0.1:80/ble/' + this.obj.buildName)
-    //   } else if (this.typeValue === '3') {
-    //     data = await this.$http.post('127.0.0.1:80/mag/' + this.obj.buildName + this.obj.floor)
-    //   } else if (this.typeValue === '4') {
-    //     data = await this.$http.post('127.0.0.1:80/pic/' + this.obj.buildName)
-    //   }
-    //   console.log('data', data)
-    //   if (data.meta.status === 200) {
-    //     this.$message.success('上传成功')
-    //   } else {
-    //     this.$message.err('上传失败')
-    //   }
-    // }
-      console.log('tip', 'this is upload function')
       const formData = new FormData()
       formData.append('file', this.file.raw)
-      this.$axios({
-        url: '/feature/pic/shilingtong',
-        method: 'post',
-        data: formData
-      }).then((response) => {
-        console.log('res:', response)
-      }).catch((error) => {
-        console.log('err:', error)
-      })
+      switch (this.typeValue) {
+        case '1':
+          this.$axios({
+            url: '/feature/wifi' + this.obj.buildName + '/' + this.obj.floor,
+            method: 'post',
+            data: formData
+          }).then((response) => {
+            console.log('res:', response)
+            if (response.status === 200) {
+              this.tableData.push(this.obj)
+            }
+          }).catch((error) => {
+            console.log('err:', error)
+          })
+          break
+        case '2':
+          this.$axios({
+            url: '/feature/ble' + this.obj.buildName,
+            method: 'post',
+            data: formData
+          }).then((response) => {
+            console.log('res:', response)
+            if (response.status === 200) {
+              this.tableData.push(this.obj)
+            }
+          }).catch((error) => {
+            console.log('err:', error)
+          })
+          break
+        case '3':
+          this.$axios({
+            url: '/feature/mag/' + this.obj.buildName + '/' + this.obj.floor,
+            method: 'post',
+            data: formData
+          }).then((response) => {
+            console.log('res:', response)
+            if (response.status === 200) {
+              this.tableData.push(this.obj)
+            }
+          }).catch((error) => {
+            console.log('err:', error)
+          })
+          break
+        case '4':
+          this.$axios({
+            url: '/feature/pic/shilingtong',
+            method: 'post',
+            data: formData
+          }).then((response) => {
+            console.log('res:', response)
+            if (response.status === 200) {
+              this.tableData.push(this.obj)
+            }
+          }).catch((error) => {
+            console.log('err:', error)
+          })
+          break
+      }
     }
-    // test () {
-    //   this.$axios.get('/').then(response => {
-    //     if (response.data) {
-    //       console.log(response.data)
-    //     }
-    //   }).catch(err => {
-    //     console.log(err)
-    //   })
-    // }
   },
   created () {
-    // this.getData()
+    this.getBid()
   }
 }
 </script>
