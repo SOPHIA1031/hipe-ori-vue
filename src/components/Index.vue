@@ -83,6 +83,7 @@
       </el-table-column>
       <el-table-column prop="fileName" label="File" align="center">
       </el-table-column>
+      <!-- <el-table-column label="Operation" align="center"> </el-table-column> -->
     </el-table>
   </div>
 </template>
@@ -225,6 +226,7 @@ export default {
             console.log('res:', response)
             if (response.status === 200) {
               this.tableData.push(this.obj)
+              this.fileList = []
             }
           }).catch((error) => {
             console.log('err:', error)
@@ -239,6 +241,7 @@ export default {
             console.log('res:', response)
             if (response.status === 200) {
               this.tableData.push(this.obj)
+              this.fileList = []
             }
           }).catch((error) => {
             console.log('err:', error)
@@ -253,6 +256,7 @@ export default {
             console.log('res:', response)
             if (response.status === 200) {
               this.tableData.push(this.obj)
+              this.fileList = []
             }
           }).catch((error) => {
             console.log('err:', error)
@@ -267,6 +271,7 @@ export default {
             console.log('res:', response)
             if (response.status === 200) {
               this.tableData.push(this.obj)
+              this.fileList = []
             }
           }).catch((error) => {
             console.log('err:', error)
