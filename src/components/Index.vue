@@ -1,7 +1,7 @@
 <template>
   <div id="container">
     <el-card id="myCard">
-      <el-form label-width="150px">
+      <el-form label-width="150px" v-loading="loading">
         <el-form-item label="Building Name">
           <el-select
             v-model="buildName"
@@ -81,18 +81,20 @@
         align="center"
       >
       </el-table-column>
-      <el-table-column prop="fileName" label="File" align="center">
+      <el-table-column prop="fileName" label="File" align="center" width="180">
       </el-table-column>
-      <!-- <el-table-column label="Operation" align="center"> </el-table-column> -->
+      <el-table-column label="Operation" align="center">
+        <el-tag @click="deleteFile" style="cursor: pointer">删除</el-tag>
+      </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
-// import axios from '../request'
 export default {
   data () {
     return {
+      loading: true,
       tableData: [],
       list: [],
       buildNames: [],
@@ -131,7 +133,7 @@ export default {
     }
   },
   methods: {
-    // get building list data
+    // get building list
     getBid () {
       this.$axios.get('/infos').then(response => {
         console.log('response', response)
@@ -144,6 +146,7 @@ export default {
           }
           this.buildNames.push(obj)
         }
+        this.loading = false
       }).catch(err => {
         console.log('err:', err)
       })
@@ -264,7 +267,7 @@ export default {
           break
         case '4':
           this.$axios({
-            url: '/feature/pic/shilingtong',
+            url: '/feature/pic/' + this.obj.buildName,
             method: 'post',
             data: formData
           }).then((response) => {
@@ -278,6 +281,9 @@ export default {
           })
           break
       }
+    },
+    deleteFile () {
+      console.log('delete')
     }
   },
   created () {
