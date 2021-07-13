@@ -37,8 +37,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="Encryption">
-          <el-radio v-model="encrypt" label="1">是</el-radio>
-          <el-radio v-model="encrypt" label="0">否</el-radio>
+          <el-radio v-model="encrypt" label="true">是</el-radio>
+          <el-radio v-model="encrypt" label="false">否</el-radio>
         </el-form-item>
         <el-form-item label="File">
           <el-upload
@@ -89,7 +89,6 @@
 </template>
 
 <script>
-// import axios from '../request'
 export default {
   data () {
     return {
@@ -126,7 +125,7 @@ export default {
       fileName: null,
       fileList: null,
       file: null,
-      encrypt: '1',
+      encrypt: 'true',
       obj: {}
     }
   },
@@ -215,7 +214,19 @@ export default {
     },
     uploadFile () {
       const formData = new FormData()
-      formData.append('file', this.file.raw)
+      // formData.append('file', this.file.raw)
+      const SM4 = require('gm-crypt').sm4
+      const sm4Config = {
+        key: 'ABCDEFGHIJKLMNOP',
+        mode: 'ecb',
+        cipherType: 'base64'
+      }
+      const sm4 = new SM4(sm4Config)
+      if (this.encrypt === 'true') {
+        formData.append('file', sm4.encrypt(this.file.raw))
+      } else {
+        formData.append('file', this.file.raw)
+      }
       switch (this.typeValue) {
         case '1':
           this.$axios({
@@ -227,9 +238,17 @@ export default {
             if (response.status === 200) {
               this.tableData.push(this.obj)
               this.fileList = []
+              this.$message({
+                message: 'uploading success!',
+                type: 'success'
+              })
             }
           }).catch((error) => {
             console.log('err:', error)
+            this.$message({
+              message: 'error!',
+              type: 'warning'
+            })
           })
           break
         case '2':
@@ -242,9 +261,17 @@ export default {
             if (response.status === 200) {
               this.tableData.push(this.obj)
               this.fileList = []
+              this.$message({
+                message: 'uploading success!',
+                type: 'success'
+              })
             }
           }).catch((error) => {
             console.log('err:', error)
+            this.$message({
+              message: 'error!',
+              type: 'warning'
+            })
           })
           break
         case '3':
@@ -257,9 +284,17 @@ export default {
             if (response.status === 200) {
               this.tableData.push(this.obj)
               this.fileList = []
+              this.$message({
+                message: 'uploading success!',
+                type: 'success'
+              })
             }
           }).catch((error) => {
             console.log('err:', error)
+            this.$message({
+              message: 'error!',
+              type: 'warning'
+            })
           })
           break
         case '4':
@@ -272,9 +307,17 @@ export default {
             if (response.status === 200) {
               this.tableData.push(this.obj)
               this.fileList = []
+              this.$message({
+                message: 'uploading success!',
+                type: 'success'
+              })
             }
           }).catch((error) => {
             console.log('err:', error)
+            this.$message({
+              message: 'error!',
+              type: 'warning'
+            })
           })
           break
       }
