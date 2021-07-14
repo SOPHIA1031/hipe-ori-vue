@@ -181,7 +181,7 @@ export default {
           obj.type = this.types[i].label
         }
       }
-      if (this.encrypt === '1') {
+      if (this.encrypt === 'true') {
         obj.encryption = '是'
       } else {
         obj.encryption = '否'
@@ -219,13 +219,16 @@ export default {
       const sm4Config = {
         key: 'ABCDEFGHIJKLMNOP',
         mode: 'ecb',
-        cipherType: 'base64'
+        cipherType: 'utf8'
       }
       const sm4 = new SM4(sm4Config)
+      console.log('sm4', sm4)
       if (this.encrypt === 'true') {
         formData.append('file', sm4.encrypt(this.file.raw))
+        console.log('encrypt', formData)
       } else {
         formData.append('file', this.file.raw)
+        console.log('unencrypt', formData)
       }
       switch (this.typeValue) {
         case '1':
@@ -299,7 +302,7 @@ export default {
           break
         case '4':
           this.$axios({
-            url: '/feature/pic/shilingtong',
+            url: '/feature/pic/jy',
             method: 'post',
             data: formData
           }).then((response) => {
@@ -308,7 +311,7 @@ export default {
               this.tableData.push(this.obj)
               this.fileList = []
               this.$message({
-                message: 'uploading success!',
+                message: 'picture uploading success!',
                 type: 'success'
               })
             }
