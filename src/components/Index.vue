@@ -212,23 +212,37 @@ export default {
       console.log('file', file)
       console.log('fileList', fileList)
     },
-    uploadFile () {
+    encryptFile () {
+      const sm4 = require('sm-crypto').sm4
+      console.log('sm4', sm4)
+      // key 16进制或字节数组
+      const key = '0123456789abcdeffedcba9876543210'
+      var file = this.file.raw
+      var encryptData
+      if (file) {
+        var reader = new FileReader()
+        reader.readAsText(file)
+        // reader.readAsBinaryString(file)
+        return new Promise(function (resolve) {
+          reader.onload = function () {
+            // console.log('reader', this.result)
+            encryptData = sm4.encrypt(this.result, key)
+            resolve(encryptData)
+          }
+        })
+      }
+    },
+    async uploadFile () {
       const formData = new FormData()
       // formData.append('file', this.file.raw)
-      const SM4 = require('gm-crypt').sm4
-      const sm4Config = {
-        key: 'ABCDEFGHIJKLMNOP',
-        mode: 'ecb',
-        cipherType: 'utf8'
-      }
-      const sm4 = new SM4(sm4Config)
-      console.log('sm4', sm4)
       if (this.encrypt === 'true') {
-        formData.append('file', sm4.encrypt(this.file.raw))
-        console.log('encrypt', formData)
+        var fileData = await this.encryptFile()
+        // this.dataCallback(test)
+        console.log('x2', fileData)
+        formData.append('file', fileData)
       } else {
         formData.append('file', this.file.raw)
-        console.log('unencrypt', formData)
+        console.log('unencrypt', this.formData)
       }
       switch (this.typeValue) {
         case '1':
