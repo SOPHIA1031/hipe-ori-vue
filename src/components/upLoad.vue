@@ -2,7 +2,7 @@
   <div id="container">
     <el-card id="myCard">
       <el-form label-width="150px">
-        <el-form-item label="Building Name">
+        <el-form-item label="建筑名称">
           <el-select
             v-model="buildName"
             placeholder="请选择类型"
@@ -16,7 +16,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Floor">
+        <el-form-item label="楼层">
           <el-select v-model="floor" placeholder="请选择类型">
             <el-option
               v-for="item in floors"
@@ -26,7 +26,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Type">
+        <el-form-item label="类型">
           <el-select v-model="typeValue" placeholder="请选择类型">
             <el-option
               v-for="item in types"
@@ -36,11 +36,11 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Encryption">
+        <el-form-item label="是否加密">
           <el-radio v-model="encrypt" label="true">是</el-radio>
           <el-radio v-model="encrypt" label="false">否</el-radio>
         </el-form-item>
-        <el-form-item label="File">
+        <el-form-item label="文件">
           <el-upload
             ref="upload"
             class="upload-demo"
@@ -70,18 +70,18 @@
         align="center"
       >
       </el-table-column>
-      <el-table-column prop="floor" label="Floor" width="180" align="center">
+      <el-table-column prop="floor" label="楼层" width="180" align="center">
       </el-table-column>
-      <el-table-column prop="type" label="Type" width="180" align="center">
+      <el-table-column prop="type" label="类型" width="180" align="center">
       </el-table-column>
       <el-table-column
         prop="encryption"
-        label="Encryption"
+        label="是否加密"
         width="180"
         align="center"
       >
       </el-table-column>
-      <el-table-column prop="fileName" label="File" align="center">
+      <el-table-column prop="fileName" label="文件" align="center">
       </el-table-column>
       <!-- <el-table-column label="Operation" align="center"> </el-table-column> -->
     </el-table>
@@ -234,12 +234,11 @@ export default {
     },
     async uploadFile () {
       const formData = new FormData()
-      // formData.append('file', this.file.raw)
       if (this.encrypt === 'true') {
-        var fileData = await this.encryptFile()
-        // this.dataCallback(test)
-        console.log('x2', fileData)
-        formData.append('file', fileData)
+        // var fileData = await this.encryptFile()
+        // console.log('x2', fileData)
+        // formData.append('file', fileData)
+        formData.append('file', this.file.raw)
       } else {
         formData.append('file', this.file.raw)
         console.log('unencrypt', this.formData)
@@ -316,7 +315,7 @@ export default {
           break
         case '4':
           this.$axios({
-            url: '/feature/pic/jy',
+            url: '/feature/pic/' + this.obj.buildName,
             method: 'post',
             data: formData
           }).then((response) => {

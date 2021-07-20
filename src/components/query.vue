@@ -5,7 +5,7 @@
       :inline="true"
       style="width: 70%; margin: auto"
     >
-      <el-form-item label="Building Name">
+      <el-form-item label="建筑名称">
         <el-select v-model="value" placeholder="请选择">
           <el-option
             v-for="item in options"
@@ -21,11 +21,10 @@
       </el-form-item>
     </el-form>
     <el-table :data="tableData" border style="width: 70%; margin: auto">
-      <el-table-column prop="index" label="index" width="100"></el-table-column>
-      <el-table-column prop="type" label="Type" width="180"> </el-table-column>
-      <el-table-column prop="floor" label="Floor" width="180">
-      </el-table-column>
-      <el-table-column prop="path" label="Path"> </el-table-column>
+      <el-table-column prop="index" label="序号" width="100"></el-table-column>
+      <el-table-column prop="type" label="类型" width="180"> </el-table-column>
+      <el-table-column prop="floor" label="楼层" width="180"> </el-table-column>
+      <el-table-column prop="path" label="路径"> </el-table-column>
     </el-table>
   </div>
 </template>

@@ -1,4 +1,8 @@
 module.exports = {
+  publicPath: './',
+  outputDir: 'dist',
+  assetsDir: 'assets',
+  lintOnSave: false,
   configureWebpack: {
     devServer: {
       proxy: {
