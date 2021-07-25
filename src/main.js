@@ -11,6 +11,7 @@ Vue.use(ElementUI)
 axios.defaults.baseURL = '/api'
 axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'
 Vue.prototype.$axios = axios
+Vue.prototype.$request_url = 'http://47.99.48.150:16828'
 
 new Vue({
   router,

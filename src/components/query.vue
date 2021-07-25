@@ -41,7 +41,8 @@ export default {
   },
   methods: {
     getInfo () {
-      this.$axios.get('/infos').then(response => {
+      // this.$axios.get('/infos').then(response => {
+      this.$axios.get(this.$request_url + '/infos').then(response => {
         console.log('res', response)
         this.infos = response.data
         const bids = response.data

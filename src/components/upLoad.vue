@@ -132,7 +132,7 @@ export default {
   methods: {
     // get building list data
     getBid () {
-      this.$axios.get('/infos').then(response => {
+      this.$axios.get(this.$request_url + '/infos').then(response => {
         console.log('response', response)
         this.list = response.data
         var obj
@@ -246,7 +246,7 @@ export default {
       switch (this.typeValue) {
         case '1':
           this.$axios({
-            url: '/feature/wifi' + this.obj.buildName + '/' + this.obj.floor,
+            url: this.$request_url + '/feature/wifi/' + this.obj.buildName + '/' + this.obj.floor,
             method: 'post',
             data: formData
           }).then((response) => {
@@ -269,7 +269,7 @@ export default {
           break
         case '2':
           this.$axios({
-            url: '/feature/ble' + this.obj.buildName,
+            url: this.$request_url + '/feature/ble/' + this.obj.buildName,
             method: 'post',
             data: formData
           }).then((response) => {
@@ -292,7 +292,7 @@ export default {
           break
         case '3':
           this.$axios({
-            url: '/feature/mag/' + this.obj.buildName + '/' + this.obj.floor,
+            url: this.$request_url + '/feature/mag/' + this.obj.buildName + '/' + this.obj.floor,
             method: 'post',
             data: formData
           }).then((response) => {
@@ -315,7 +315,7 @@ export default {
           break
         case '4':
           this.$axios({
-            url: '/feature/pic/' + this.obj.buildName,
+            url: this.$request_url + '/feature/pic/' + this.obj.buildName,
             method: 'post',
             data: formData
           }).then((response) => {
